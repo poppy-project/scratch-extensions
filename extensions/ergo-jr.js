@@ -138,11 +138,15 @@
     },
 
     setMotorFlexibility(motor, motorflexibility = defaultMotorFlexibility, callback = noop) {
+      let obj = { [motor]: { compliant: (motorflexibility === 'compliant') } };
+      ws.send(JSON.stringify(obj));
       callback();
     },
 
-    setMotorPosition(motor, position = defaultMotorPosition, duration = defaultMovementDuration, callback = noop) {
-      console.log('setMotorPosition', motor, position, duration);
+    setMotorPosition(motor, goal_position = defaultMotorPosition, callback = noop) {
+      let obj = { [motor]: { goal_position } };
+      ws.send(JSON.stringify(obj));
+      console.log('setMotorPosition', motor, goal_position);
       callback();
     },
 
@@ -186,10 +190,8 @@
       [ ' ', 'Set robot host to %m.schemes %s', 'setHost', defaultScheme, defaultHost ],
       [ 'R', 'Test robot connection', 'testHost' ],
 
-      [ 'w', 'Reset %m.resetable', 'resetDevice', '' ],
-
       [ 'w', 'Set motor %m.motors %m.motorFlexibility', 'setMotorFlexibility', '', defaultMotorFlexibility ],
-      [ 'w', 'Set motor %m.motors to position %n in %n seconds', 'setMotorPosition', '', defaultMotorPosition, defaultMovementDuration ],
+      [ 'w', 'Set motor %m.motors to position %n', 'setMotorPosition', '', defaultMotorPosition ],
       [ 'w', 'Set %m.registers of motor(s) %m.motors to %s', 'setMotorRegister', 'position', '', '' ],
 
       [ 'w', 'Play move %s | Speed × %n', 'playMove', '', 1 ],
@@ -202,8 +204,7 @@
       schemes: [ 'http', 'https' ],
       motors: [ 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'all' ],
       motorFlexibility: [ 'compliant', 'stiff' ],
-      resetable: [ 'robot', 'simulation' ],
-      registers: [ 'position', 'speed', 'compliant', 'led' ],
+      registers: [ 'goal_position', 'moving_speed', 'compliant', 'led' ],
       moveCommands: [ 'start', 'pause', 'stop', 'restart' ],
       ledColors: [ 'off', 'red', 'green', 'blue', 'yellow', 'cyan', 'pink', 'white' ], // @TODO: fix list
     },
