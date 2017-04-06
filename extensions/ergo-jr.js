@@ -1,7 +1,7 @@
 (function() {
 
-  const defaultHost = 'poppy.local:8080';
-  const defaultScheme = 'http';
+  const defaultHost = 'poppy.local:9009';
+  const defaultScheme = 'ws';
   const defaultMotorFlexibility = 'compliant';
   const defaultMotorPosition = 0;
   const defaultMovementDuration = 2;
@@ -201,7 +201,7 @@
       [ 'w', 'Set led color to %m.ledColors for motor(s) %m.motors', 'setLedColor', 'off', 'all' ],
     ],
     menus: {
-      schemes: [ 'http', 'https' ],
+      schemes: [ 'ws', 'wss' ],
       motors: [ 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'all' ],
       motorFlexibility: [ 'compliant', 'stiff' ],
       registers: [ 'goal_position', 'moving_speed', 'compliant', 'led' ],
