@@ -1,215 +1,381 @@
+/* global $, ScratchExtensions */
+
 (function() {
+  const COMPLIANCY_STIFF = 'STIFF';
+  const DEFAULT_ROBOT_URL = 'http://poppy.local:6969';
+  const DEFAULT_MOVEMENT_DURATION = 2;
 
-  const defaultHost = 'poppy.local:9009';
-  const defaultScheme = 'ws';
-  const defaultMotorFlexibility = 'compliant';
-  const defaultMotorPosition = 0;
-  const defaultMovementDuration = 2;
-  const noop = function() {};
-
-  const wsHost = 'ws://poppy.local:9009';
-  const WS_STATUS_DISCONNECTED = 0;
-  const WS_STATUS_CONNECTING = 1;
-  const WS_STATUS_CONNECTED = 2;
-  const WS_STATUS_DISCONNECTING = 3;
-
-  let host = '';
-  let ws = null;
-  let wsStatus = WS_STATUS_DISCONNECTED;
-  let robotState = null;
-  let robotSettings = {
-    m1: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
-    },
-    m2: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
-    },
-    m3: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
-    },
-    m4: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
-    },
-    m5: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
-    },
-    m6: {
-      goal_position: 0,
-      moving_speed: 500,
-      torque_limit: 75,
-      led: 'off'
+  const KS = {
+    COMPLIANT: 'manipulable(s)',
+    NO: 'non',
+    READY: 'Prêt',
+    SFALSE: 'faux',
+    [COMPLIANCY_STIFF]: 'rigide(s)',
+    STRUE: 'vrai',
+    YES: 'oui',
+    LED_COLORS: {
+      OFF: 'aucune',
+      RED: 'rouge',
+      GREEN: 'vert',
+      BLUE: 'bleu',
+      YELLOW: 'jaune',
+      CYAN: 'cyan',
+      PINK: 'rose',
+      WHITE: 'blanc'
     }
-  };
-
-  const startSocket = function(url = wsHost) {
-    if (ws) {
-      console.log(`Socket already opened.`);
-      return false;
-    }
-
-    let isOpen = false;
-    let timer = null;
-
-    wsStatus = WS_STATUS_DISCONNECTED;
-    ws = new WebSocket(url);
-    wsStatus = WS_STATUS_CONNECTING;
-
-    ws.onopen = function() {
-      isOpen = true;
-      wsStatus = WS_STATUS_CONNECTED;
-    };
-
-    ws.onmessage = function(e) {
-      if (typeof e.data == 'string') {
-        const data = JSON.parse(e.data);
-        robotState = data;
-      }
-    }
-
-    ws.onclose = function() {
-      isOpen = false;
-      ws = null;
-      timer = null;
-      wsStatus = WS_STATUS_DISCONNECTED;
-    }
-
-    return ws;
   }
 
+  let currentRobotURL = DEFAULT_ROBOT_URL;
+  let recordingMoves = [];
+
+  const msToSeconds = function(duration) {
+    return 1000 * duration;
+  }
+
+  const safeMotorsList = function(motors) {
+    let targetMotors = motors.trim();
+
+    if (targetMotors === '') {
+      targetMotors = 'm1,m2,m3,m4,m5,m6';
+    }
+
+    return targetMotors;
+  }
+
+  const yesnoToBool = function(yesno) {
+    return yesno === KS.YES;
+  }
+
+  const colorToLedColor = function(color) {
+    let ledColor = 'off';
+
+    for (const key in KS.LED_COLORS) {
+      if (KS.LED_COLORS[key] === color) {
+        ledColor = key.toLowerCase();
+      }
+    }
+
+    return ledColor;
+  }
+
+  const compliancyToInt = function(compliancy) {
+    return Number(compliancy !== COMPLIANCY_STIFF);
+  }
+
+  const isRecording = function(moveName) {
+    return recordingMoves.filter((item) => item === moveName).length > 0;
+  }
+
+  const removeRecordingMove = function(moveName) {
+    recordingMoves = recordingMoves.filter((item) => item !== moveName);
+  }
+
+
+  // The extension
   const ext = {
-    _shutdown() {
-      wsStatus = WS_STATUS_DISCONNECTING;
-      ws.close();
-    },
+    _shutdown() {},
 
     _getStatus() {
-      if (wsStatus === WS_STATUS_DISCONNECTED) {
-        startSocket();
-        return { status: WS_STATUS_DISCONNECTED, msg: 'Not connected' };
-      } else if (wsStatus === WS_STATUS_CONNECTING) {
-        return { status: WS_STATUS_CONNECTING, msg: 'Connecting' };
-      } else if (wsStatus === WS_STATUS_DISCONNECTING) {
-        return { status: WS_STATUS_CONNECTING, msg: 'Disconnecting' };
-      } else if (wsStatus === WS_STATUS_CONNECTED) {
-        return { status: WS_STATUS_CONNECTED, msg: 'Ready' };
+      return {
+        status: 2,
+        msg: KS.READY
       }
     },
 
-    logRobotState() {
-      console.log(robotState);
+    getCurrentRobotURL() {
+      return currentRobotURL;
     },
 
-    pushRobotState() {
-      ws.send(JSON.stringify(robotSettings));
+    getRecordingMoves() {
+      return recordingMoves;
     },
 
-    getHost() {
-      return host;
+    setCurrentRobotURL(url) {
+      currentRobotURL = url;
     },
 
-    setHost(scheme = defaultScheme, newHost = defaultHost) {
-      host = `${scheme}://${newHost}`;
-      return host;
-    },
-
-    testHost(callback) {
+    testHost(url, callback) {
       $.ajax({
-        url: host,
-        dataType: 'json',
+        url,
+        method: 'GET',
         success() {
-          callback('OK');
+          callback(true);
+        },
+        error() {
+          callback(false);
         }
       });
     },
 
-    setMotorFlexibility(motor, motorflexibility = defaultMotorFlexibility, callback = noop) {
-      let obj = { [motor]: { compliant: (motorflexibility === 'compliant') } };
-      ws.send(JSON.stringify(obj));
-      callback();
+    setMotorCompliancy(motors, compliancy, callback) {
+      let compliancyKey = null;
+      const targetMotors = safeMotorsList(motors);
+
+      for (const key in KS) {
+        if (KS[key] === compliancy) {
+          compliancyKey = key;
+        }
+      }
+
+      const params = targetMotors
+        .split(',')
+        .map((current) => `${current.trim()}:compliant:${compliancyToInt(compliancyKey)}`)
+        .join(';');
+
+      $.ajax({
+        url: `${currentRobotURL}/motors/set/registers/${params}`,
+        method: 'GET',
+        success() {
+          callback();
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    setMotorPosition(motor, goal_position = defaultMotorPosition, callback = noop) {
-      let obj = { [motor]: { goal_position } };
-      ws.send(JSON.stringify(obj));
-      console.log('setMotorPosition', motor, goal_position);
-      callback();
+    setMotorsPositionAndWait(motors, position, duration, wait, callback) {
+      const targetMotors = safeMotorsList(motors);
+
+      const params = targetMotors
+        .split(',')
+        .map((current) => `${current.trim()}:${position}:${duration}`)
+        .join(';');
+
+      $.ajax({
+        url: `${currentRobotURL}/motors/set/goto/${params}`,
+        method: 'GET',
+        success() {
+          if (yesnoToBool(wait) === true) {
+            callback();
+            const waitTimeoutID = setTimeout(() => {
+              clearTimeout(waitTimeoutID);
+              callback();
+            }, msToSeconds(duration));
+          } else {
+            callback();
+          }
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    resetDevice(device, callback = noop) {
-      console.log('resetDevice', device);
-      callback();
+    startBehavior(behaviorName, callback) {
+      if (behaviorName === '') {
+        callback(false);
+      }
+
+      $.ajax({
+        url: `${currentRobotURL}/primitive/${behaviorName}/start`,
+        method: 'GET',
+        success() {
+          callback();
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    setMotorRegister(registerName, motor, registerValue, callback = noop) {
-      console.log('setMotorRegister', registerName, motor, registerValue);
-      callback();
+    stopBehavior(behaviorName, callback) {
+      $.ajax({
+        url: `${currentRobotURL}/primitive/${behaviorName}/stop`,
+        method: 'GET',
+        success() {
+          callback();
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    playMove(moveName, speed = 1, callback = noop) {
-      console.log('playMove', moveName, speed);
-      callback();
+    setMotorsRegister(motors, register, registerValue, callback) {
+      const targetMotors = safeMotorsList(motors);
+      const params = targetMotors
+        .split(',')
+        .map((current) => `${current.trim()}:${register}:${registerValue.trim()}`)
+        .join(';');
+
+      $.ajax({
+        url: `${currentRobotURL}/motors/set/registers/${params}`,
+        method: 'GET',
+        success() {
+          callback();
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    stopMove(moveName, callback = noop) {
-      console.log('stopMove', moveName);
-      callback();
+    setMotorsLedColor(motors, color, callback) {
+      const ledColor = colorToLedColor(color);
+      const targetMotors = safeMotorsList(motors);
+      const params = targetMotors
+        .split(',')
+        .map((current) => `${current.trim()}:led:${ledColor}`)
+        .join(';');
+
+      $.ajax({
+        url: `${currentRobotURL}/motors/set/registers/${params}`,
+        method: 'GET',
+        success() {
+          callback();
+        },
+        error() {
+          callback();
+        }
+      });
     },
 
-    updateMove(command, moveName, callback = noop) {
-      console.log('updateMove', command, moveName);
-      callback();
+    getMotorsRegisterValue(motors, register, callback) {
+      const targetMotors = safeMotorsList(motors).replace(/,/g, ';');
+
+      $.ajax({
+        url: `${currentRobotURL}/motors/${targetMotors}/get/${register}`,
+        method: 'GET',
+        success(data) {
+          callback(data.split(';'));
+        },
+        error() {
+          callback(null);
+        }
+      });
     },
 
-    setLedColor(led, motor, callback = noop) {
-      let obj = { [motor]: { led } };
-      ws.send(JSON.stringify(obj));
-      callback();
+    getMotorsNames(callback) {
+      $.ajax({
+        url: `${currentRobotURL}/motors/motors`,
+        method: 'GET',
+        success(data) {
+          callback(data.split('/'));
+        },
+        error() {
+          callback(false);
+        }
+      });
+    },
+
+    createAndRecordMove(moveName, motors, callback) {
+      if (isRecording(moveName)) {
+        callback(false);
+      } else {
+        const safeMoveName = moveName.trim();
+        const targetMotors = safeMotorsList(motors).replace(/,/g, ';');
+
+        if (safeMoveName.length > 0) {
+          $.ajax({
+            url: `${currentRobotURL}/primitive/MoveRecorder/${safeMoveName}/start/${targetMotors}`,
+            method: 'GET',
+            success() {
+              recordingMoves.push(safeMoveName);
+              callback(true);
+            },
+            error() {
+              callback(false);
+            }
+          });
+        } else {
+          callback(false);
+        }
+      }
+    },
+
+    stopMoveRecord(moveName, callback) {
+      const safeMoveName = moveName.trim();
+
+      $.ajax({
+        url: `${currentRobotURL}/primitive/MoveRecorder/${safeMoveName}/stop`,
+        method: 'GET',
+        success() {
+          removeRecordingMove(safeMoveName);
+          callback(true);
+        },
+        error() {
+          callback(false);
+        }
+      });
+    },
+
+    playMove(moveName, callback) {
+      const safeMoveName = moveName.trim();
+
+      $.ajax({
+        url: `${currentRobotURL}/primitive/MovePlayer/${safeMoveName}/start`,
+        method: 'GET',
+        success() {
+          callback(true);
+        },
+        error() {
+          callback(false);
+        }
+      });
+    },
+
+    stopAndSaveMove(moveName, callback) {
+      const safeMoveName = moveName.trim();
+
+      $.ajax({
+        url: `${currentRobotURL}/primitive/MovePlayer/${safeMoveName}/stop`,
+        method: 'GET',
+        success() {
+          callback(true);
+        },
+        error() {
+          callback(false);
+        }
+      });
+    },
+
+    deleteMove(moveName, callback) {
+      const safeMoveName = moveName.trim();
+
+      $.ajax({
+        url: `${currentRobotURL}/primitive/MoveRecorder/${safeMoveName}/remove`,
+        method: 'GET',
+        success() {
+          callback(true);
+        },
+        error() {
+          callback(false);
+        }
+      });
     }
-  };
+  }
 
   const descriptor = {
-    blocks: [
-      [ ' ', 'Log robot state', 'logRobotState' ],
-
-      [ 'r', 'Robot host', 'getHost' ],
-      [ ' ', 'Set robot host to %m.schemes %s', 'setHost', defaultScheme, defaultHost ],
-      [ 'R', 'Test robot connection', 'testHost' ],
-
-      [ 'w', 'Set motor %m.motors %m.motorFlexibility', 'setMotorFlexibility', '', defaultMotorFlexibility ],
-      [ 'w', 'Set motor %m.motors to position %n', 'setMotorPosition', '', defaultMotorPosition ],
-      [ 'w', 'Set %m.registers of motor(s) %m.motors to %s', 'setMotorRegister', 'position', '', '' ],
-
-      [ 'w', 'Play move %s | Speed × %n', 'playMove', '', 1 ],
-      [ 'w', 'Stop move %s', 'stopMove', '' ],
-      [ 'w', '%m.moveCommands behaviour %s', 'updateMove', 'start', '' ],
-
-      [ 'w', 'Set led color to %m.ledColors for motor(s) %m.motors', 'setLedColor', 'off', 'all' ],
-    ],
     menus: {
-      schemes: [ 'ws', 'wss' ],
-      motors: [ 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'all' ],
-      motorFlexibility: [ 'compliant', 'stiff' ],
-      registers: [ 'goal_position', 'moving_speed', 'compliant', 'led' ],
-      moveCommands: [ 'start', 'pause', 'stop', 'restart' ],
-      ledColors: [ 'off', 'red', 'green', 'blue', 'yellow', 'cyan', 'pink', 'white' ], // @TODO: fix list
+      allRegisters: [ 'name', 'model', 'present_position', 'goal_position', 'present_speed', 'moving_speed', 'present_load', 'torque_limit', 'lower_limit', 'upper_limit', 'present_voltage', 'present_temperature' ],
+      behaviors: [ 'dance', 'tracking_feedback', 'curious_posture', 'tetris_posture', 'safe_power_up', 'base_posture', 'rest_posture' ],
+      compliancy: [ KS.COMPLIANT, KS.STIFF ],
+      ledColors: [ KS.LED_COLORS.OFF, KS.LED_COLORS.RED, KS.LED_COLORS.GREEN, KS.LED_COLORS.BLUE, KS.LED_COLORS.YELLOW, KS.LED_COLORS.CYAN, KS.LED_COLORS.PINK, KS.LED_COLORS.WHITE ],
+      motors: [ 'm1', 'm2', 'm3', 'm4', 'm5', 'm6' ],
+      registers: [ 'led', 'goal_position', 'moving_speed', 'torque_limit' ],
+      yesno: [ KS.YES, KS.NO ]
     },
-    url: 'https://poppy-project.github.io/scratch-extensions/'
+    blocks: [
+      [ 'r', 'URL du robot', 'getCurrentRobotURL' ],
+      [ 'r', 'Mouvements en cours d’enregistrement', 'getRecordingMoves' ],
+      [ 'R', 'Le robot %s est disponible ?', 'testHost', '' ],
+      [ ' ', 'Utiliser le robot %s', 'setCurrentRobotURL', '' ],
+      [ 'w', 'Rendre le(s) moteur(s) %s %m.compliancy', 'setMotorCompliancy', '', KS.STIFF ],
+      [ 'w', 'Mettre le(s) moteur(s) %s à la position %n en %n s. | Attendre la fin du mouvement ? %m.yesno', 'setMotorsPositionAndWait', '', 0, DEFAULT_MOVEMENT_DURATION, KS.YES ],
+      [ 'w', 'Jouer le comportement %m.behaviors', 'startBehavior', '' ],
+      [ 'w', 'Arrêter le comportement %m.behaviors', 'stopBehavior', '' ],
+      [ 'w', 'Pour le(s) moteur(s) %s, définir la valeur du registre %m.registers à %s', 'setMotorsRegister', '', '', '' ],
+      [ 'w', 'Pour le(s) moteur(s) %s, définir la couleur de la LED à %m.ledColors', 'setMotorsLedColor', '', 'off' ],
+      [ 'R', 'Pour le(s) moteur(s) %s, donner la valeur du registre %m.allRegisters', 'getMotorsRegisterValue', '', '' ],
+      [ 'R', 'Donner la liste des noms de tous les moteurs', 'getMotorsNames' ],
+      [ 'w', 'Créer et démarrer l’enregistrement du mouvement %s avec le(s) moteur(s) %s', 'createAndRecordMove', '', 'm1,m2,m3,m4,m5,m6' ],
+      [ 'w', 'Arrêter l’enregistrement du mouvement %s', 'stopMoveRecord', '' ],
+      [ 'w', 'Lire le mouvement %s', 'playMove', '' ],
+      [ 'w', 'Arrêter la lecture du mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
+      [ 'w', 'Supprimer le mouvement %s', 'deleteMove', '' ]
+    ]
   };
 
-  ScratchExtensions.register('Poppy Ergo Jr', descriptor, ext);
-})();
+  ScratchExtensions.register('Poppy bootcamp extension', descriptor, ext);
+}());
