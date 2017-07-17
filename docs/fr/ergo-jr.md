@@ -1,6 +1,6 @@
 # Utilisation de l'extension ScratchX « Poppy Ergo Jr »
 
-L'extension ScratchX pour Poppy Ergo Jr fonctionne avec le service [ScratchX](http://scratchx.org/).
+L'extension ScratchX pour le robot [Poppy Ergo Jr](https://www.poppy-education.org/robots/poppy-ergo-jr/) fonctionne avec le service [ScratchX](http://scratchx.org/).
 
 Depuis la page d'accueil de ScratchX, cliquez sur « _Open Extension URL_ », puis renseignez le champ de formulaire avec l'adresse suivante https://poppy-project.github.io/scratch-extensions/extensions/ergo-jr.js  
 Les blocs Scratch de l'extension sont maintenant chargés !
