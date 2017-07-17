@@ -12,15 +12,15 @@
       };
     },
 
-    hello: (name = 'Ergo') => `Hello, ${name}!`
+    hello: (name) => `Hello, ${name}!`
   };
 
   const descriptor = {
     blocks: [
       // Block type, block name, function name, param1 default value, param2 default value
-      [ 'r', 'Hello %s', 'hello', 'robots' ]
+      [ 'r', 'Hello %s', 'hello', 'world' ]
     ]
   };
 
-  ScratchExtensions.register('Poppy hello world extension', descriptor, ext);
+  ScratchExtensions.register('Hello world extension', descriptor, ext);
 }());
