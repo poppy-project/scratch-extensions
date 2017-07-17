@@ -459,13 +459,13 @@
       [ 'w', 'Jouer le comportement %m.behaviors', 'startBehavior', '' ],
       [ 'w', 'Arrêter le comportement %m.behaviors', 'stopBehavior', '' ],
       [ 'w', 'Pour le(s) moteur(s) %s, définir la valeur du registre %m.registers à %s', 'setMotorsRegister', ALL_MOTORS, '', '' ],
-      [ 'w', 'Pour le(s) moteur(s) %s, définir la couleur de la LED à %m.ledColors', 'setMotorsLedColor', ALL_MOTORS, 'off' ],
+      [ 'w', 'Pour le(s) moteur(s) %s, définir la couleur de la LED à %m.ledColors', 'setMotorsLedColor', ALL_MOTORS, KS.LED_COLORS.OFF ],
       [ 'R', 'Pour le(s) moteur(s) %s, retourner la valeur du registre %m.allRegisters', 'getMotorsRegisterValue', ALL_MOTORS, '' ],
       [ 'R', 'Tous les moteurs', 'getMotorsNames' ],
       [ 'w', 'Créer et démarrer l’enregistrement du mouvement %s avec le(s) moteur(s) %s', 'createAndRecordMove', '', ALL_MOTORS ],
       [ 'w', 'Arrêter l’enregistrement du mouvement %s', 'stopMoveRecord', '' ],
-      [ 'w', 'Lire le mouvement %s', 'playMove', '' ],
-      [ 'w', 'Arrêter la lecture du mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
+      [ 'w', 'Jouer le mouvement %s', 'playMove', '' ],
+      [ 'w', 'Arrêter le mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
       [ 'w', 'Supprimer le mouvement %s', 'deleteMove', '' ]
     ],
     url: 'https://poppy-project.github.io/scratch-extensions/docs/fr/ergo-jr.html'
