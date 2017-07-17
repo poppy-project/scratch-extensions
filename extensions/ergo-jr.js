@@ -468,7 +468,7 @@
       [ 'w', 'Arrêter la lecture du mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
       [ 'w', 'Supprimer le mouvement %s', 'deleteMove', '' ]
     ],
-    url: 'https://poppy-project.github.io/scratch-extensions/docs/fr/ergo-jr'
+    url: 'https://poppy-project.github.io/scratch-extensions/docs/fr/ergo-jr.html'
   };
 
   ScratchExtensions.register('Extension Poppy Ergo Jr', descriptor, ext);
