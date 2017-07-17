@@ -401,7 +401,7 @@
       }
     },
 
-    stopAndSaveMove(moveName, callback) {
+    stopMove(moveName, callback) {
       const safeMoveName = moveName.trim();
 
       if (safeMoveName === '') {
@@ -463,9 +463,9 @@
       [ 'R', 'Pour le(s) moteur(s) %s, retourner la valeur du registre %m.allRegisters', 'getMotorsRegisterValue', ALL_MOTORS, '' ],
       [ 'R', 'Tous les moteurs', 'getMotorsNames' ],
       [ 'w', 'Créer et démarrer l’enregistrement du mouvement %s avec le(s) moteur(s) %s', 'createAndRecordMove', '', ALL_MOTORS ],
-      [ 'w', 'Arrêter l’enregistrement du mouvement %s', 'stopMoveRecord', '' ],
+      [ 'w', 'Arrêter l’enregistrement du mouvement %s et sauvegarder', 'stopMoveRecord', '' ],
       [ 'w', 'Jouer le mouvement %s', 'playMove', '' ],
-      [ 'w', 'Arrêter le mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
+      [ 'w', 'Arrêter le mouvement %s', 'stopMove', '' ],
       [ 'w', 'Supprimer le mouvement %s', 'deleteMove', '' ]
     ],
     url: 'https://poppy-project.github.io/scratch-extensions/docs/fr/ergo-jr.html'

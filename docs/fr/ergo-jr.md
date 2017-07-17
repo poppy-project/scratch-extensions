@@ -66,15 +66,15 @@ Lorsque ce bloc est activé, un nouveau mouvement est créé et l'enregistrement
 
 ### ![Arrêter l’enregistrement du mouvement %s](../../img/fr/stop-move-recording.png)
 
-Arrête l'enregistrement du mouvement donné.
+Arrête l'enregistrement du mouvement donné et le sauvegarde.
 
 ### ![Jouer le mouvement %s](../../img/fr/play-move.png)
 
-Le robot va jouer le mouvement demandé.
+Le robot joue le mouvement demandé.
 
-### ![Arrêter le mouvement %s et l’enregistrer](../../img/fr/stop-and-save-move.png)
+### ![Arrêter le mouvement %s et l’enregistrer](../../img/fr/stop-move.png)
 
-[ 'w', 'Arrêter le mouvement %s et l’enregistrer', 'stopAndSaveMove', '' ],
+Arrête la lecture du mouvement demandé.
 
 ### ![Supprimer le mouvement %s](../../img/fr/delete-move.png)
 
