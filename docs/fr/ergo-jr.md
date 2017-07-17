@@ -5,6 +5,8 @@ L'extension ScratchX pour le robot [Poppy Ergo Jr](https://www.poppy-education.o
 Depuis la page d'accueil de ScratchX, cliquez sur « _Open Extension URL_ », puis renseignez le champ de formulaire avec l'adresse suivante https://poppy-project.github.io/scratch-extensions/extensions/ergo-jr.js  
 Les blocs Scratch de l'extension sont maintenant chargés !
 
+---
+
 ## Paramètres du robot
 
 ### ![URL du robot](../../img/fr/get-host.png)
@@ -20,6 +22,8 @@ La valeur proposée par défaut est `http://poppy.local:6969`.
 
 Teste la disponibilité du robot.  
 S'il est utilisable, le bloc retourne la valeur `true`.
+
+---
 
 ## Interaction avec les moteurs et leurs registres
 
@@ -48,6 +52,8 @@ Définit la valeur d'un registre pour un ou plusieurs moteurs.
 
 Change la couleur de la diode (_LED_) d'un ou plusieurs moteurs. La valeur `off` éteint la diode.
 
+---
+
 ## Comportements du robot
 
 ### ![Jouer le comportement %m.behaviors](../../img/fr/start-behavior.png)
@@ -57,6 +63,8 @@ Joue un comportement du robot.
 ### ![Arrêter le comportement %m.behaviors](../../img/fr/stop-behavior.png)
 
 Arrête la lecture d'un comportement du robot.
+
+---
 
 ## Gestion des mouvements personnalisés
 
