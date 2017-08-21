@@ -17,16 +17,16 @@ All the technological development work made in the Poppy project is freely avail
 
 |   License     |     Hardware    |   Software      |
 | ------------- | :-------------: | :-------------: |
-| Title  | [Creative Commons BY-SA](http://creativecommons.org/licenses/by-sa/4.0/)  |[GPL v3](http://www.gnu.org/licenses/gpl.html)  |
-| Logo  | [![Creative Commons BY-SA](https://i.creativecommons.org/l/by-sa/4.0/88x31.png) ](http://creativecommons.org/licenses/by-sa/4.0/)  |[![GPL V3](https://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/licenses/gpl.html)  |
+| Title  | [Creative Commons BY-SA](https://creativecommons.org/licenses/by-sa/4.0/)  |[GPL v3](https://www.gnu.org/licenses/gpl.html)  |
+| Logo  | [![Creative Commons BY-SA](https://i.creativecommons.org/l/by-sa/4.0/88x31.png) ](https://creativecommons.org/licenses/by-sa/4.0/)  |[![GPL V3](https://www.gnu.org/graphics/gplv3-88x31.png)](https://www.gnu.org/licenses/gpl.html)  |
 
 
 ## The Poppy project history
 
-The Poppy project was born in 2012 in the [Flowers laboratory](https://flowers.inria.fr/) at [Inria Bordeaux Sud-Ouest](http://www.inria.fr/en/centre/bordeaux).
-It was initiated during [Matthieu Lapeyre](https://github.com/matthieu-lapeyre)'s PhD Thesis surpervised by [Pierre Yves Oudeyer](http://www.pyoudeyer.com/). At the beginning, the development team was composed by [Matthieu Lapeyre](https://github.com/matthieu-lapeyre) (mechanics & design), [Pierre Rouanet](https://github.com/pierre-rouanet) (software) and [Jonathan Grizou](http://jgrizou.com/) (electronics).
+The Poppy project was born in 2012 in the [Flowers laboratory](https://flowers.inria.fr/) at [Inria Bordeaux Sud-Ouest](https://www.inria.fr/en/centre/bordeaux).
+It was initiated during [Matthieu Lapeyre](https://github.com/matthieu-lapeyre)'s PhD Thesis surpervised by [Pierre-Yves Oudeyer](http://www.pyoudeyer.com/). At the beginning, the development team was composed by [Matthieu Lapeyre](https://github.com/matthieu-lapeyre) (mechanics & design), [Pierre Rouanet](https://github.com/pierre-rouanet) (software) and [Jonathan Grizou](http://jgrizou.com/) (electronics).
 
-This project is initially a fundamental research project financed by [ERC Grant Explorer](http://erc.europa.eu/) to explore the role of embodiement and morphology properties on cognition and especially on the learning of sensori-motor tasks.
+This project is initially a fundamental research project financed by [ERC Grant Explorer](https://erc.europa.eu/) to explore the role of embodiement and morphology properties on cognition and especially on the learning of sensori-motor tasks.
 
 
 ## More on the project
@@ -38,4 +38,4 @@ This project is initially a fundamental research project financed by [ERC Grant 
 - [Facebook](https://www.facebook.com/poppycommunity/)
 - [Flickr](https://www.flickr.com/photos/poppy-project)
 - [Vimeo](https://vimeo.com/poppyproject)
-- [Thingiverse](http://www.thingiverse.com/poppy_project/)
+- [Thingiverse](https://www.thingiverse.com/poppy_project/)
