@@ -3,7 +3,7 @@
 This is a compilation of ScratchX extensions for the robots built within the [Poppy Project](https://www.poppy-project.org).
 
 * *[Hello, world!](extensions/hello-world.js)*
-* *[Poppy Ergo Jr](extensions/ergo-jr.js)*
+* *[Poppy Ergo Jr](https://poppy-project.github.io/scratch-extensions/docs/fr/ergo-jr.html)*
 
 ## Contributing
 
